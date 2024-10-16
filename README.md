@@ -24,6 +24,10 @@ python process_pumpkins.py
 
 to generate data from the CSV files. I've already done this - the repository includes a SQLite database named `pumpkin.db`
 
+## Querying the Database
+
+You can query  `pumpkin.db` in place inside the container, or copy the database file to use in your own pumpkin-related project.
+
 ## Copying Data from the Container
 To copy the data from the container to your local machine, use the following command:
 ```sh

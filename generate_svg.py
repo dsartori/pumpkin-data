@@ -96,12 +96,18 @@ if not df_bar_others.empty and not df_bar_ontario.empty:
     ax.set_xticklabels(df_bar_others.index.year, rotation=45, ha='right')
 
     handles_others, labels_others = ax.get_legend_handles_labels()
-    handles_ontario = [plt.Rectangle((0, 0), 1, 1, color='red')]  # Create a custom handle for Ontario
-   
-    handles_combined = handles_others + handles_ontario
-    labels_combined = labels_others + ['Ontario']
-    
-    ax.legend(handles_combined, labels_combined, loc='upper left', bbox_to_anchor=(1, 1))
+    filtered_handles = []
+    filtered_labels = []
+    seen_labels = set()
+
+    for handle, label in zip(handles_others, labels_others):
+        if label not in seen_labels:
+            filtered_handles.append(handle)
+            filtered_labels.append(label)
+            seen_labels.add(label)
+            
+    # Update the legend
+    ax.legend(filtered_handles, filtered_labels, loc='upper left', bbox_to_anchor=(1, 1))
 
     output_path_bar = os.path.join(output_dir, f'bar_chart_{bar_chart_measure}.svg')
     plt.tight_layout()
