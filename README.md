@@ -17,7 +17,7 @@ docker build -t pumpkin-production .
 ## Executing the Script
 To get a shell inside the Docker container, run:
 ```sh
-docker run --it --rm --name pumpkin pumpkin-production
+docker run -it --rm --name pumpkin pumpkin-production
 ```
 
 Inside the container shell, run:

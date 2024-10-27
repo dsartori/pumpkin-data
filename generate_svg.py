@@ -6,12 +6,12 @@ import os
 conn = sqlite3.connect('pumpkin.db')
 
 stacked_area_measures = [
-    'Area harvested (hectares)',
-    'Area planted (hectares)',
-    'Total production (metric tonnes)'
+    'Area harvested',
+    'Area planted',
+    'Total production'
 ]
 
-bar_chart_measure = 'Farm gate value (dollars)'
+bar_chart_measure = 'Farm gate value'
 
 output_dir = "charts"
 os.makedirs(output_dir, exist_ok=True)
@@ -26,6 +26,10 @@ for measure in stacked_area_measures:
     '''
     
     df = pd.read_sql_query(query, conn)
+
+    uom = 'hectares'
+    if measure == 'Total production':
+        uom = 'kilograms'
     
     # Convert 'Reference_Date' to a datetime object
     df['Reference_Date'] = pd.to_datetime(df['Reference_Date'], format='%Y')
@@ -46,7 +50,7 @@ for measure in stacked_area_measures:
     
     ax.set_title(measure)  
     ax.set_xlabel('Year')
-    ax.set_ylabel('Total Quantity')
+    ax.set_ylabel(f'Total Quantity ({uom})')
     
     ax.ticklabel_format(style='plain', axis='x')
     

@@ -4,6 +4,9 @@ import os
 import sys
 
 def process_csv_folder_to_sqlite(folder_path):
+    if os.path.exists('pumpkin.db'):
+        os.remove('pumpkin.db')
+
     conn = sqlite3.connect('pumpkin.db')
     cursor = conn.cursor()
 
@@ -76,6 +79,13 @@ def process_csv_folder_to_sqlite(folder_path):
                     return None
 
             df['Converted_UOM'] = df.apply(determine_converted_uom, axis=1)
+
+            # remove the text in bracket from measure names before insertion
+            df['Estimates'] = df['Estimates'].str.replace(r"\(.*\)", "", regex=True).str.strip()
+
+            # Remove redundant data (same measure but different UOM)
+            df = df.sort_values(by=['GEO', 'REF_DATE', 'Estimates', 'UOM'])
+            df = df.drop_duplicates(subset=['GEO', 'REF_DATE', 'Estimates'], keep='first')
 
             df_to_insert = df[['GEO', 'REF_DATE', 'Estimates', 'UOM', 'VALUE', 'Measure_Type', 'Converted_Quantity', 'Converted_UOM']]
             df_to_insert.columns = ['Geography', 'Reference_Date', 'Measure', 'Unit_of_Measure', 'Quantity', 'Measure_Type', 'Converted_Quantity', 'Converted_UOM']
